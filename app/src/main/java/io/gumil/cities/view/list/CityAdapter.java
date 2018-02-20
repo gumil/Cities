@@ -16,12 +16,10 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
 
     private List<City> cities;
 
-    public CityAdapter() {
-        this.cities = new ArrayList<>();
-    }
+    private OnItemClickListener listener;
 
-    public CityAdapter(List<City> cities) {
-        this.cities = cities;
+    CityAdapter() {
+        this.cities = new ArrayList<>();
     }
 
     @Override
@@ -45,15 +43,31 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
         notifyDataSetChanged();
     }
 
-    static class CityViewHolder extends RecyclerView.ViewHolder {
-        public CityViewHolder(View itemView) {
+    void setListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    class CityViewHolder extends RecyclerView.ViewHolder {
+        CityViewHolder(View itemView) {
             super(itemView);
         }
 
-        void bind(City city) {
+        void bind(final City city) {
             TextView cityTextView = itemView.findViewById(R.id.item_city_name);
-
             cityTextView.setText(String.format("%s, %s", city.getName(), city.getCountry()));
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onItemClick(city);
+                    }
+                }
+            });
         }
+    }
+
+    interface OnItemClickListener {
+        void onItemClick(City city);
     }
 }
