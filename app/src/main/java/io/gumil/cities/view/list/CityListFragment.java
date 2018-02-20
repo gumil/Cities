@@ -14,17 +14,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.List;
 
 import io.gumil.cities.CityApplication;
+import io.gumil.cities.MainActivity;
 import io.gumil.cities.R;
 import io.gumil.cities.model.City;
+import io.gumil.cities.view.map.MapFragment;
 
-public class CityListFragment extends Fragment implements CityView {
+public class CityListFragment extends Fragment implements CityView, CityAdapter.OnItemClickListener {
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private CityAdapter adapter = new CityAdapter();
+    private CityListPresenter presenter;
 
     public static CityListFragment newInstance() {
         Bundle args = new Bundle();
@@ -54,16 +59,29 @@ public class CityListFragment extends Fragment implements CityView {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         recyclerView = view.findViewById(R.id.recyclerView);
         progressBar = view.findViewById(R.id.progressBar);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        adapter.setListener(this);
+
+        if (getContext() != null) {
+            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        }
 
         if (getActivity() != null && getActivity().getApplication() instanceof CityApplication) {
-            CityListPresenter presenter = new CityListPresenter(((CityApplication) getActivity().getApplication()).getRepository(), this);
+            presenter = new CityListPresenter(((CityApplication) getActivity().getApplication()).getRepository(), this);
             presenter.loadCities();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).showToolbar(true);
         }
     }
 
@@ -76,5 +94,13 @@ public class CityListFragment extends Fragment implements CityView {
     public void showCities(List<City> cities) {
         adapter.setCities(cities);
         recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onItemClick(City city) {
+        if (getActivity() instanceof MainActivity) {
+            LatLng location = new LatLng(city.getCoord().getLatitude(), city.getCoord().getLongitude());
+            ((MainActivity) getActivity()).goTo(MapFragment.newInstance(city.getName(), location), true);
+        }
     }
 }

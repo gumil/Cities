@@ -10,8 +10,8 @@ public class Coord {
         this.lat = lat;
     }
 
-    public void setLongitude(double lon) {
-        this.lon = lon;
+    public double getLongitude() {
+        return lon;
     }
 
     public double getLatitude() {
