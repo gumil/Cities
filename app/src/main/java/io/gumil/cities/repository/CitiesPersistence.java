@@ -19,12 +19,17 @@ import io.gumil.cities.model.City;
 public class CitiesPersistence {
 
     private List<City> cities;
+    private Context context;
+
+    public CitiesPersistence(Context context) {
+        this.context = context;
+    }
 
     /**
      * Lazily gets the list of cities
      */
     @Nullable
-    public List<City> getCities(Context context) throws IOException {
+    public List<City> getCities() throws IOException {
         if (cities != null) return cities;
 
         BufferedReader reader = null;
