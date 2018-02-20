@@ -1,6 +1,8 @@
 package io.gumil.cities.model;
 
-public class City {
+import android.support.annotation.NonNull;
+
+public class City implements Comparable<City> {
 
     private int _id;
     private String country;
@@ -61,5 +63,16 @@ public class City {
                 ", name='" + name + '\'' +
                 ", coord=" + coord +
                 '}';
+    }
+
+    @Override
+    public int compareTo(@NonNull City o) {
+        int compare = name.toLowerCase().compareTo(o.getName().toLowerCase());
+
+        if (compare == 0) {
+            compare = country.compareTo(o.getCountry());
+        }
+
+        return compare;
     }
 }
