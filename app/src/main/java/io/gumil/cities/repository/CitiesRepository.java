@@ -1,11 +1,9 @@
 package io.gumil.cities.repository;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,10 +17,10 @@ import io.gumil.cities.model.City;
 public class CitiesRepository {
 
     private TreeMap<String, City> citiesMap;
-    private Context context;
+    private Stream stream;
 
-    public CitiesRepository(Context context) {
-        this.context = context;
+    public CitiesRepository(Stream stream) {
+        this.stream = stream;
     }
 
     /**
@@ -34,10 +32,9 @@ public class CitiesRepository {
 
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(context.getAssets().open("cities.json")));
+            reader = new BufferedReader(new InputStreamReader(stream.getStream()));
 
             String line;
-            JsonParser parser = new JsonParser();
             TreeMap<String, City> cities = new TreeMap<>();
             Gson gson = new Gson();
             while ((line = reader.readLine()) != null) {
@@ -47,7 +44,7 @@ public class CitiesRepository {
                         substring = line.substring(0, line.length() - 1);
                     }
 
-                    City city = gson.fromJson(parser.parse(substring), City.class);
+                    City city = gson.fromJson(substring, City.class);
                     cities.put(city.getName().toLowerCase(), city);
                 }
             }
