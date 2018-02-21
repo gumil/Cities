@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +38,7 @@ public class CityListFragment extends Fragment implements CityView, CityAdapter.
     private CityAdapter adapter = new CityAdapter();
     private CityListPresenter presenter;
     private MenuItem searchMenu;
+    private SearchView searchView;
 
     public static CityListFragment newInstance() {
         Bundle args = new Bundle();
@@ -61,9 +63,9 @@ public class CityListFragment extends Fragment implements CityView, CityAdapter.
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         searchMenu = menu.findItem(R.id.actionSearch);
-        SearchView view = (SearchView) searchMenu.getActionView();
+        searchView = (SearchView) searchMenu.getActionView();
 
-        view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -75,6 +77,39 @@ public class CityListFragment extends Fragment implements CityView, CityAdapter.
                 return true;
             }
         });
+
+        searchMenu.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                if (getActivity() != null) {
+                    FragmentManager supportFragmentManager = getActivity().getSupportFragmentManager();
+                    int index = supportFragmentManager.getBackStackEntryCount() - 1;
+
+                    if (index == -1) {
+                        return true;
+                    }
+
+                    String name = supportFragmentManager.getBackStackEntryAt(index).getName();
+
+                    if (!name.equals(CityListFragment.class.getSimpleName())) {
+                        getActivity().onBackPressed();
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+                return true;
+            }
+        });
+
+        if (adapter.getItemCount() > 0 && searchMenu != null) {
+            searchMenu.setVisible(true);
+        }
     }
 
     @Nullable
