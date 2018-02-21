@@ -14,7 +14,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        goTo(CityListFragment.newInstance(), false);
+        if (savedInstanceState == null) {
+            goTo(CityListFragment.newInstance(), false);
+        }
     }
 
     @Override
