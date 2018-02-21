@@ -11,6 +11,7 @@ import java.util.List;
 
 import io.gumil.cities.R;
 import io.gumil.cities.model.City;
+import io.gumil.cities.view.SingleClickListener;
 
 public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder> {
 
@@ -56,9 +57,9 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
             TextView cityTextView = itemView.findViewById(R.id.cityName);
             cityTextView.setText(String.format("%s, %s", city.getName(), city.getCountry()));
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new SingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClicked(View v) {
                     if (listener != null) {
                         listener.onItemClick(city);
                     }
