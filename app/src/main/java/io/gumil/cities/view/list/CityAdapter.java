@@ -53,7 +53,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
         }
 
         void bind(final City city) {
-            TextView cityTextView = itemView.findViewById(R.id.item_city_name);
+            TextView cityTextView = itemView.findViewById(R.id.cityName);
             cityTextView.setText(String.format("%s, %s", city.getName(), city.getCountry()));
 
             itemView.setOnClickListener(new View.OnClickListener() {

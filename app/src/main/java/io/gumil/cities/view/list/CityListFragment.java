@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -31,6 +32,8 @@ public class CityListFragment extends Fragment implements CityView, CityAdapter.
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private TextView emptyTextView;
+
     private CityAdapter adapter = new CityAdapter();
     private CityListPresenter presenter;
     private MenuItem searchMenu;
@@ -57,7 +60,7 @@ public class CityListFragment extends Fragment implements CityView, CityAdapter.
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        searchMenu = menu.findItem(R.id.action_search);
+        searchMenu = menu.findItem(R.id.actionSearch);
         SearchView view = (SearchView) searchMenu.getActionView();
 
         view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -89,6 +92,8 @@ public class CityListFragment extends Fragment implements CityView, CityAdapter.
 
         recyclerView = view.findViewById(R.id.recyclerView);
         progressBar = view.findViewById(R.id.progressBar);
+        emptyTextView = view.findViewById(R.id.emptyText);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
@@ -114,6 +119,7 @@ public class CityListFragment extends Fragment implements CityView, CityAdapter.
     public void setLoading(boolean isLoading) {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         recyclerView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+        emptyTextView.setVisibility(View.GONE);
     }
 
     @Override
@@ -121,6 +127,8 @@ public class CityListFragment extends Fragment implements CityView, CityAdapter.
         if (searchMenu != null) {
             searchMenu.setVisible(true);
         }
+
+        emptyTextView.setVisibility(cities.isEmpty() ? View.VISIBLE : View.GONE);
         adapter.setCities(cities);
     }
 
