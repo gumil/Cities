@@ -63,20 +63,21 @@ public class MapFragment extends Fragment {
         mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
 
+        if (getActivity() != null) {
+            MapsInitializer.initialize(getActivity());
+        }
+
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap map) {
+
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(location).zoom(12).build();
+                map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
                 map.addMarker(new MarkerOptions()
                         .position(location)
                         .title(title))
                         .showInfoWindow();
-
-                if (getActivity() != null) {
-                    MapsInitializer.initialize(getActivity());
-                }
-
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(location).zoom(12).build();
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
     }
