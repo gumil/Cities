@@ -57,12 +57,7 @@ public class City implements Comparable<City> {
 
     @Override
     public String toString() {
-        return "City{" +
-                "_id=" + _id +
-                ", country='" + country + '\'' +
-                ", name='" + name + '\'' +
-                ", coord=" + coord +
-                '}';
+        return name + ", " + country;
     }
 
     @Override

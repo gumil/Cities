@@ -58,7 +58,7 @@ public class CitiesRepository {
                     }
 
                     City city = gson.fromJson(substring, City.class);
-                    cities.put(city.getName().toLowerCase(), city);
+                    cities.put(city.toString().toLowerCase(), city);
                 }
             }
 
