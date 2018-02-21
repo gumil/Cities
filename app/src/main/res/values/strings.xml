@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Cities</string>
+    <string name="error_get_cities">An error occurred. Failed to get cities.</string>
+    <string name="no_cities">No Cities Found.</string>
 </resources>

@@ -3,13 +3,16 @@ package io.gumil.cities.view.list;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -30,6 +33,7 @@ public class CityListFragment extends Fragment implements CityView, CityAdapter.
     private ProgressBar progressBar;
     private CityAdapter adapter = new CityAdapter();
     private CityListPresenter presenter;
+    private MenuItem searchMenu;
 
     public static CityListFragment newInstance() {
         Bundle args = new Bundle();
@@ -50,6 +54,26 @@ public class CityListFragment extends Fragment implements CityView, CityAdapter.
         inflater.inflate(R.menu.menu_list, menu);
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        searchMenu = menu.findItem(R.id.action_search);
+        SearchView view = (SearchView) searchMenu.getActionView();
+
+        view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                presenter.filter(newText);
+                return true;
+            }
+        });
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,6 +83,9 @@ public class CityListFragment extends Fragment implements CityView, CityAdapter.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).showToolbar(true);
+        }
 
         recyclerView = view.findViewById(R.id.recyclerView);
         progressBar = view.findViewById(R.id.progressBar);
@@ -78,22 +105,30 @@ public class CityListFragment extends Fragment implements CityView, CityAdapter.
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).showToolbar(true);
-        }
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.destroy();
     }
 
     @Override
     public void setLoading(boolean isLoading) {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        recyclerView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
     }
 
     @Override
     public void showCities(List<City> cities) {
+        if (searchMenu != null) {
+            searchMenu.setVisible(true);
+        }
         adapter.setCities(cities);
-        recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showError(int stringRes) {
+        if (getView() != null) {
+            Snackbar.make(getView(), stringRes, Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override

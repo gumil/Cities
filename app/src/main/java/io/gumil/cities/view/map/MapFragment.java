@@ -49,7 +49,6 @@ public class MapFragment extends Fragment {
         }
     }
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -59,6 +58,7 @@ public class MapFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        showToolbar(false);
 
         mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -84,7 +84,6 @@ public class MapFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        showToolbar(false);
         mapView.onResume();
     }
 
