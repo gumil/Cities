@@ -78,6 +78,7 @@ public class CitiesRepository {
     public List<City> filter(String prefix) {
         if (citiesMap == null) return new ArrayList<>();
 
+        prefix = prefix.toLowerCase();
         return new ArrayList<>(citiesMap.subMap(prefix, true,
                 prefix + Character.MAX_VALUE, true).values());
     }

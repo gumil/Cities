@@ -45,7 +45,7 @@ public class CitiesRepositoryTest {
         assertEquals(4, filteredSmallA.size());
 
         List<City> filteredCapitalA = repository.filter("A");
-        assertEquals(4, filteredSmallA.size());
+        assertEquals(4, filteredCapitalA.size());
     }
 
     @Test
